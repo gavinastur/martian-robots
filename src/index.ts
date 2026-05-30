@@ -58,61 +58,77 @@ export const run = (input: string) => {
       console.log(r.instructions[i]);
       const instruction = r.instructions[i];
 
-      const isLost = grid.isLost(currPosition);
-      if (isLost) {
-        currPosition = { ...currPosition, isLost: true };
-      } else {
-        if (instruction === 'L' && currPosition.orientation === 'N') {
-          currPosition = { ...currPosition, orientation: 'W' };
-          continue;
+      if (instruction === 'L' && currPosition.orientation === 'N') {
+        currPosition = { ...currPosition, orientation: 'W' };
+        continue;
+      }
+      if (instruction === 'L' && currPosition.orientation === 'E') {
+        currPosition = { ...currPosition, orientation: 'N' };
+        continue;
+      }
+      if (instruction === 'L' && currPosition.orientation === 'S') {
+        currPosition = { ...currPosition, orientation: 'E' };
+        continue;
+      }
+      if (instruction === 'L' && currPosition.orientation === 'W') {
+        currPosition = { ...currPosition, orientation: 'S' };
+        continue;
+      }
+      if (instruction === 'R' && currPosition.orientation === 'N') {
+        currPosition = { ...currPosition, orientation: 'E' };
+        continue;
+      }
+      if (instruction === 'R' && currPosition.orientation === 'E') {
+        currPosition = { ...currPosition, orientation: 'S' };
+        continue;
+      }
+      if (instruction === 'R' && currPosition.orientation === 'S') {
+        currPosition = { ...currPosition, orientation: 'W' };
+        continue;
+      }
+      if (instruction === 'R' && currPosition.orientation === 'W') {
+        currPosition = { ...currPosition, orientation: 'N' };
+        continue;
+      }
+      if (instruction === 'F' && currPosition.orientation === 'S') {
+        const fut = { ...currPosition, y: currPosition.y - 1 };
+        const isLost = grid.isLost(fut);
+        currPosition = isLost ? { ...currPosition, isLost } : fut;
+        if (isLost) {
+          break;
         }
-        if (instruction === 'L' && currPosition.orientation === 'E') {
-          currPosition = { ...currPosition, orientation: 'N' };
-          continue;
+        continue;
+      }
+
+      if (instruction === 'F' && currPosition.orientation === 'N') {
+        const fut = { ...currPosition, y: currPosition.y + 1 };
+        const isLost = grid.isLost(fut);
+        currPosition = isLost ? { ...currPosition, isLost } : fut;
+        if (isLost) {
+          break;
         }
-        if (instruction === 'L' && currPosition.orientation === 'S') {
-          currPosition = { ...currPosition, orientation: 'E' };
-          continue;
+        continue;
+      }
+      if (instruction === 'F' && currPosition.orientation === 'E') {
+        const fut = { ...currPosition, x: currPosition.x + 1 };
+        const isLost = grid.isLost(fut);
+        currPosition = isLost ? { ...currPosition, isLost } : fut;
+        if (isLost) {
+          break;
         }
-        if (instruction === 'L' && currPosition.orientation === 'W') {
-          currPosition = { ...currPosition, orientation: 'S' };
-          continue;
-        }
-        if (instruction === 'R' && currPosition.orientation === 'N') {
-          currPosition = { ...currPosition, orientation: 'E' };
-          continue;
-        }
-        if (instruction === 'R' && currPosition.orientation === 'E') {
-          currPosition = { ...currPosition, orientation: 'S' };
-          continue;
-        }
-        if (instruction === 'R' && currPosition.orientation === 'S') {
-          currPosition = { ...currPosition, orientation: 'W' };
-          continue;
-        }
-        if (instruction === 'R' && currPosition.orientation === 'W') {
-          currPosition = { ...currPosition, orientation: 'N' };
-          continue;
-        }
-        if (instruction === 'F' && currPosition.orientation === 'S') {
-          currPosition = { ...currPosition, y: currPosition.y - 1 };
-          continue;
-        }
-        if (instruction === 'F' && currPosition.orientation === 'N') {
-          currPosition = { ...currPosition, y: currPosition.y + 1 };
-          continue;
-        }
-        if (instruction === 'F' && currPosition.orientation === 'E') {
-          currPosition = { ...currPosition, x: currPosition.x + 1 };
-          continue;
-        }
-        if (instruction === 'F' && currPosition.orientation === 'W') {
-          currPosition = { ...currPosition, x: currPosition.x - 1 };
+        continue;
+      }
+      if (instruction === 'F' && currPosition.orientation === 'W') {
+        const fut = { ...currPosition, x: currPosition.x - 1 };
+        const isLost = grid.isLost(fut);
+        currPosition = isLost ? { ...currPosition, isLost } : fut;
+        if (isLost) {
+          break;
         }
       }
     }
     output.push(`${currPosition.x} ${currPosition.y} ${currPosition.orientation}${currPosition.isLost ? ' LOST' : ''}`);
   });
-  //
+
   return output.join('\n');
 };

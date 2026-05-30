@@ -21,4 +21,6 @@ export type Grid = {
   width: number;
   height: number;
   isLost: (position: Position) => boolean;
+  addScent: (position: Position) => void;
+  hasScent: (position: Position) => boolean;
 };

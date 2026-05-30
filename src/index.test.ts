@@ -1,4 +1,5 @@
 import { getGrid, getInputs, run } from './index.js';
+import type { Position } from './types.js';
 
 describe('martian robots tests', () => {
   describe('getInputs', () => {
@@ -55,8 +56,10 @@ describe('martian robots tests', () => {
     test('getGrid should set up a basic grid', () => {
       expect(getGrid({ height: 0, width: 0 })).toStrictEqual({
         height: 0,
-        isLost: expect.any(Function),
         width: 0,
+        isLost: expect.any(Function),
+        addScent: expect.any(Function),
+        hasScent: expect.any(Function),
       });
     });
 
@@ -68,6 +71,14 @@ describe('martian robots tests', () => {
     test('isLost should be false when on grid', () => {
       const g = getGrid({ height: 3, width: 5 });
       expect(g.isLost({ x: 1, y: 1, orientation: 'E' })).toStrictEqual(false);
+    });
+
+    test('addScent should add some scent', () => {
+      const g = getGrid({ height: 3, width: 5 });
+      const pos = { x: 1, y: 1, orientation: 'E' } as Position;
+      expect(g.hasScent(pos)).toStrictEqual(false);
+      g.addScent(pos);
+      expect(g.hasScent(pos)).toStrictEqual(true);
     });
   });
 

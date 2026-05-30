@@ -35,10 +35,14 @@ export const getInputs = (input: string): Input => {
 };
 
 export const getGrid = (grid: GridSize): Grid => {
+  const scents = new Set<string>();
+  const getScentKey = (p: Position) => `${p.x}-${p.y}-${p.orientation}`;
   return {
     width: grid.width,
     height: grid.height,
     isLost: (pos: Position) => pos.x < 0 || pos.y < 0 || pos.x > grid.width || pos.y > grid.height,
+    addScent: (p) => scents.add(getScentKey(p)),
+    hasScent: (p) => scents.has(getScentKey(p)),
   };
 };
 

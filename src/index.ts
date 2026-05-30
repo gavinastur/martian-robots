@@ -36,8 +36,36 @@ export const getInputs = (input: string): Input => {
 
 export const run = (input: string) => {
   console.log('run:input:', input);
-  const inputs = getInputs(input);
-  console.log('run:inputs:', inputs);
+  const processedInput = getInputs(input);
+  console.log('run:processedInput:', processedInput);
+
+  const output: string[] = [];
   //TODO deal with instructions
-  return '';
+  processedInput.robotInstructions.forEach((r) => {
+    let currPosition = r.initialPosition;
+    for (let i = 0; i < r.instructions.length; i++) {
+      console.log(currPosition);
+      console.log(r.instructions[i]);
+      const instruction = r.instructions[i];
+
+      if (instruction === 'L' && currPosition.orientation === 'N') {
+        currPosition = { ...currPosition, orientation: 'W' };
+        continue;
+      }
+      if (instruction === 'L' && currPosition.orientation === 'E') {
+        currPosition = { ...currPosition, orientation: 'N' };
+        continue;
+      }
+      if (instruction === 'L' && currPosition.orientation === 'S') {
+        currPosition = { ...currPosition, orientation: 'E' };
+        continue;
+      }
+      if (instruction === 'L' && currPosition.orientation === 'W') {
+        currPosition = { ...currPosition, orientation: 'S' };
+      }
+    }
+    output.push(`${currPosition.x} ${currPosition.y} ${currPosition.orientation}`);
+  });
+  //
+  return output.join('\n');
 };

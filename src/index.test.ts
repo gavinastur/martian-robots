@@ -1,14 +1,24 @@
-import { getInstructions, run } from './index.js';
+import { getInputs, run } from './index.js';
 
 describe('martian robots tests', () => {
-  describe('getInstructions', () => {
-    test('getInstructions should throw when input missing', () => {
-      expect(() => getInstructions('')).toThrow('Missing instructions, see README for examples.');
+  describe('getInputs', () => {
+    test('getInputs should throw when input missing', () => {
+      expect(() => getInputs('')).toThrow('Missing instructions, see README for examples.');
     });
 
-    test('getInstructions should throw when grid is out of bounds', () => {
-      expect(() => getInstructions('51 3\n1 1 E')).toThrow('Coordinates must be between 1 and 50');
-      expect(() => getInstructions('3 51\n1 1 E')).toThrow('Coordinates must be between 1 and 50');
+    test('getInputs should throw when grid is out of bounds', () => {
+      expect(() => getInputs('51 3\n1 1 E')).toThrow('Coordinates must be between 1 and 50');
+      expect(() => getInputs('3 51\n1 1 E')).toThrow('Coordinates must be between 1 and 50');
+    });
+
+    test('getInputs should return a grid', () => {
+      expect(getInputs('50 3')).toStrictEqual({
+        gridSize: {
+          height: 3,
+          width: 50,
+        },
+        instructions: [],
+      });
     });
   });
 

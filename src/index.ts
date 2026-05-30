@@ -1,23 +1,6 @@
-type GridSize = {
-  width: number;
-  height: number;
-};
+import type { Input, Instruction, Orientation, Position, RobotInstruction } from './types.js';
 
-type Inputs = {
-  gridSize: GridSize;
-  robotInstructions: RobotInstruction[];
-};
-
-type Orientation = 'N' | 'E' | 'S' | 'W';
-type Instruction = 'L' | 'R' | 'F';
-type Position = { x: number; y: number; orientation: Orientation; isLost?: boolean };
-
-type RobotInstruction = {
-  initialPosition: Position;
-  instructions: Instruction[];
-};
-
-export const getInputs = (input: string): Inputs => {
+export const getInputs = (input: string): Input => {
   console.log('getInstructions:input:', input);
   if (!input) {
     throw new Error('Missing instructions, see README for examples.');

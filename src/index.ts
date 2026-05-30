@@ -47,19 +47,21 @@ export const getGrid = (grid: GridSize): Grid => {
 };
 
 export const run = (input: string) => {
-  console.log('run:input:', input);
+  console.log('run:entry');
+  console.log('run:input:', input.replaceAll('\n', '-'));
   const processedInput = getInputs(input);
-  console.log('run:processedInput:', processedInput);
+  // console.log('run:processedInput:', processedInput);
 
   const output: string[] = [];
 
   const grid = getGrid(processedInput.gridSize);
-  //TODO deal with instructions
-  processedInput.robotInstructions.forEach((r) => {
+  processedInput.robotInstructions.forEach((r, i) => {
+    console.log('run:robot:number', i);
+
     let currPosition = r.initialPosition;
     for (let i = 0; i < r.instructions.length; i++) {
-      console.log(currPosition);
-      console.log(r.instructions[i]);
+      // console.log(currPosition);
+      // console.log(r.instructions[i]);
       const instruction = r.instructions[i];
 
       if (instruction === 'L' && currPosition.orientation === 'N') {
@@ -95,44 +97,60 @@ export const run = (input: string) => {
         continue;
       }
       if (instruction === 'F' && currPosition.orientation === 'S') {
-        const fut = { ...currPosition, y: currPosition.y - 1 };
-        const isLost = grid.isLost(fut);
-        currPosition = isLost ? { ...currPosition, isLost } : fut;
-        if (isLost) {
-          break;
+        if (!grid.hasScent(currPosition)) {
+          const nextPosition = { ...currPosition, y: currPosition.y - 1 };
+          const isLost = grid.isLost(nextPosition);
+          if (isLost) {
+            grid.addScent(currPosition);
+            currPosition = { ...currPosition, isLost };
+            break;
+          }
+          currPosition = nextPosition;
         }
         continue;
       }
 
       if (instruction === 'F' && currPosition.orientation === 'N') {
-        const fut = { ...currPosition, y: currPosition.y + 1 };
-        const isLost = grid.isLost(fut);
-        currPosition = isLost ? { ...currPosition, isLost } : fut;
-        if (isLost) {
-          break;
+        if (!grid.hasScent(currPosition)) {
+          const nextPosition = { ...currPosition, y: currPosition.y + 1 };
+          const isLost = grid.isLost(nextPosition);
+          if (isLost) {
+            grid.addScent(currPosition);
+            currPosition = { ...currPosition, isLost };
+            break;
+          }
+          currPosition = nextPosition;
         }
         continue;
       }
       if (instruction === 'F' && currPosition.orientation === 'E') {
-        const fut = { ...currPosition, x: currPosition.x + 1 };
-        const isLost = grid.isLost(fut);
-        currPosition = isLost ? { ...currPosition, isLost } : fut;
-        if (isLost) {
-          break;
+        if (!grid.hasScent(currPosition)) {
+          const nextPosition = { ...currPosition, x: currPosition.x + 1 };
+          const isLost = grid.isLost(nextPosition);
+          if (isLost) {
+            grid.addScent(currPosition);
+            currPosition = { ...currPosition, isLost };
+            break;
+          }
+          currPosition = nextPosition;
         }
         continue;
       }
       if (instruction === 'F' && currPosition.orientation === 'W') {
-        const fut = { ...currPosition, x: currPosition.x - 1 };
-        const isLost = grid.isLost(fut);
-        currPosition = isLost ? { ...currPosition, isLost } : fut;
-        if (isLost) {
-          break;
+        if (!grid.hasScent(currPosition)) {
+          const nextPosition = { ...currPosition, x: currPosition.x - 1 };
+          const isLost = grid.isLost(nextPosition);
+          if (isLost) {
+            grid.addScent(currPosition);
+            currPosition = { ...currPosition, isLost };
+            break;
+          }
+          currPosition = nextPosition;
         }
       }
     }
     output.push(`${currPosition.x} ${currPosition.y} ${currPosition.orientation}${currPosition.isLost ? ' LOST' : ''}`);
   });
-
+  console.log('run:exit');
   return output.join('\n');
 };

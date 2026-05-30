@@ -87,6 +87,18 @@ describe('martian robots tests', () => {
       expect(run('5 3\n1 1 E\nRFRFRFRF')).toStrictEqual('1 1 E');
     });
 
+    test('run should process single robot which gets lost', () => {
+      expect(run('5 3\n3 2 N\nFRRFLLFFRRFLL')).toStrictEqual('3 3 N LOST');
+    });
+
+    test('run should process single robot which also gets lost', () => {
+      expect(run('5 3\n0 3 W\nLLFFFLFLFL')).toStrictEqual('3 3 N LOST');
+    });
+
+    test('run should process two robots and the second should not get lost', () => {
+      expect(run('5 3\n0 3 W\nLLFFFLFLFL\n0 3 W\nLLFFFLFLFL')).toStrictEqual('3 3 N LOST\n2 3 S');
+    });
+
     test('run should process all robots', () => {
       expect(run('5 3\n1 1 E\nRFRFRFRF\n3 2 N\nFRRFLLFFRRFLL\n0 3 W\nLLFFFLFLFL')).toStrictEqual('1 1 E\n3 3 N LOST\n2 3 S');
     });

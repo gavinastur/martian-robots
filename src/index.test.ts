@@ -17,7 +17,26 @@ describe('martian robots tests', () => {
           height: 3,
           width: 50,
         },
-        instructions: [],
+        robotInstructions: [],
+      });
+    });
+
+    test('getInputs should process input', () => {
+      expect(getInputs('5 3\n1 1 E\nRFRFRFRF')).toStrictEqual({
+        gridSize: {
+          height: 3,
+          width: 5,
+        },
+        robotInstructions: [
+          {
+            initialPosition: {
+              orientation: 'E',
+              x: 1,
+              y: 1,
+            },
+            instructions: ['R', 'F', 'R', 'F', 'R', 'F', 'R', 'F'],
+          },
+        ],
       });
     });
   });

@@ -1,4 +1,4 @@
-import { getInputs, run } from './index.js';
+import { getGrid, getInputs, run } from './index.js';
 
 describe('martian robots tests', () => {
   describe('getInputs', () => {
@@ -48,6 +48,26 @@ describe('martian robots tests', () => {
         },
         robotInstructions: [],
       });
+    });
+  });
+
+  describe('getGrid', () => {
+    test('getGrid should set up a basic grid', () => {
+      expect(getGrid({ height: 0, width: 0 })).toStrictEqual({
+        height: 0,
+        isLost: expect.any(Function),
+        width: 0,
+      });
+    });
+
+    test('isLost should be true when off grid', () => {
+      const g = getGrid({ height: 0, width: 0 });
+      expect(g.isLost({ x: 1, y: 1, orientation: 'E' })).toStrictEqual(true);
+    });
+
+    test('isLost should be false when on grid', () => {
+      const g = getGrid({ height: 3, width: 5 });
+      expect(g.isLost({ x: 1, y: 1, orientation: 'E' })).toStrictEqual(false);
     });
   });
 

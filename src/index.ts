@@ -78,6 +78,22 @@ export const run = (input: string) => {
       }
       if (instruction === 'R' && currPosition.orientation === 'W') {
         currPosition = { ...currPosition, orientation: 'N' };
+        continue;
+      }
+      if (instruction === 'F' && currPosition.orientation === 'S') {
+        currPosition = { ...currPosition, y: currPosition.y - 1 };
+        continue;
+      }
+      if (instruction === 'F' && currPosition.orientation === 'N') {
+        currPosition = { ...currPosition, y: currPosition.y + 1 };
+        continue;
+      }
+      if (instruction === 'F' && currPosition.orientation === 'E') {
+        currPosition = { ...currPosition, x: currPosition.x + 1 };
+        continue;
+      }
+      if (instruction === 'F' && currPosition.orientation === 'W') {
+        currPosition = { ...currPosition, x: currPosition.x - 1 };
       }
     }
     output.push(`${currPosition.x} ${currPosition.y} ${currPosition.orientation}`);

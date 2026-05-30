@@ -1,4 +1,4 @@
-import { getGrid, getInputs, run } from './index.js';
+import { getGrid, getInputs, run } from './robots.js';
 import type { Position } from './types.js';
 
 describe('martian robots tests', () => {

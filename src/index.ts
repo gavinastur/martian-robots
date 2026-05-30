@@ -3,6 +3,16 @@ export const getInstructions = (input: string) => {
   if (!input) {
     throw new Error('Missing instructions, see README for examples.');
   }
+
+  const lines: string[] = input.split('\n');
+
+  //First line of instructions is our grid
+  const [width, height] = lines[0].split(' ');
+
+  if (Number(width) > 50 || Number(height) > 50) {
+    throw new Error('Coordinates must be between 1 and 50');
+  }
+
   return {};
 };
 

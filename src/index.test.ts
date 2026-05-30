@@ -5,6 +5,11 @@ describe('martian robots tests', () => {
     test('getInstructions should throw when input missing', () => {
       expect(() => getInstructions('')).toThrow('Missing instructions, see README for examples.');
     });
+
+    test('getInstructions should throw when grid is out of bounds', () => {
+      expect(() => getInstructions('51 3\n1 1 E')).toThrow('Coordinates must be between 1 and 50');
+      expect(() => getInstructions('3 51\n1 1 E')).toThrow('Coordinates must be between 1 and 50');
+    });
   });
 
   describe.skip('run', () => {

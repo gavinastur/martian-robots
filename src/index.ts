@@ -37,14 +37,17 @@ export const getInputs = (input: string): Inputs => {
   const [, ...robotInputs] = lines;
   const robotInstructions: RobotInstruction[] = [];
 
+  //Each input should have two lines per robot
   for (let i = 0; i < robotInputs.length; i += 2) {
     const [x, y, orientation] = robotInputs[i].split(' ');
     const instructions = robotInputs[i + 1]?.split('') as Instruction[];
     const initialPosition: Position = { x: Number(x), y: Number(y), orientation: orientation as Orientation };
     const robotInstruction: RobotInstruction = { initialPosition, instructions };
-    robotInstructions.push(robotInstruction);
+    //Only add complete instructions
+    if (instructions) {
+      robotInstructions.push(robotInstruction);
+    }
   }
-
   return { gridSize, robotInstructions: robotInstructions };
 };
 

@@ -39,6 +39,16 @@ describe('martian robots tests', () => {
         ],
       });
     });
+
+    test('getInputs should filter out incomplete inputs', () => {
+      expect(getInputs('50 3\n1 1 E')).toStrictEqual({
+        gridSize: {
+          height: 3,
+          width: 50,
+        },
+        robotInstructions: [],
+      });
+    });
   });
 
   describe.skip('run', () => {

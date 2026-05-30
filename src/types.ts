@@ -16,3 +16,9 @@ export type RobotInstruction = {
   initialPosition: Position;
   instructions: Instruction[];
 };
+
+export type Grid = {
+  width: number;
+  height: number;
+  isLost: (position: Position) => boolean;
+};

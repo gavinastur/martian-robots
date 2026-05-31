@@ -1,7 +1,7 @@
 import type { Grid, GridSize, Input, Instruction, Orientation, Position, RobotInstruction } from './types.js';
 
 export const getInputs = (input: string): Input => {
-  console.log('getInstructions:input:', input);
+  // console.log('getInputs:input:', input);
   if (!input) {
     throw new Error('Missing instructions, see README for examples.');
   }
@@ -47,8 +47,7 @@ export const getGrid = (grid: GridSize): Grid => {
 };
 
 export const run = (input: string) => {
-  console.log('run:entry');
-  console.log('run:input:', input.replaceAll('\n', '-'));
+  // console.log('run:entry');
   const processedInput = getInputs(input);
   // console.log('run:processedInput:', processedInput);
 
@@ -56,7 +55,7 @@ export const run = (input: string) => {
 
   const grid = getGrid(processedInput.gridSize);
   processedInput.robotInstructions.forEach((r, i) => {
-    console.log('run:robot:number', i);
+    // console.log('run:robot:number', i);
 
     let currPosition = r.initialPosition;
     for (let i = 0; i < r.instructions.length; i++) {
@@ -151,6 +150,6 @@ export const run = (input: string) => {
     }
     output.push(`${currPosition.x} ${currPosition.y} ${currPosition.orientation}${currPosition.isLost ? ' LOST' : ''}`);
   });
-  console.log('run:exit');
+  // console.log('run:exit');
   return output.join('\n');
 };

@@ -22,7 +22,7 @@
   "main": "src/index.ts",
   "scripts": {
     "build": "npm run tsc",
-    "index": "tsx src/index.ts",
+    "robots": "tsx src/index.ts",
     "lint": "npm run biome:check:fix",
     "biome:check:fix": "biome check --write .",
     "test": "vitest run --coverage",

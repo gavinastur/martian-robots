@@ -8,6 +8,8 @@ describe('martian robots tests', () => {
     });
 
     test('getInputs should throw when grid is out of bounds', () => {
+      expect(() => getInputs('0 50\n1 1 E')).toThrow('Coordinates must be between 1 and 50');
+      expect(() => getInputs('50 0\n1 1 E')).toThrow('Coordinates must be between 1 and 50');
       expect(() => getInputs('51 3\n1 1 E')).toThrow('Coordinates must be between 1 and 50');
       expect(() => getInputs('3 51\n1 1 E')).toThrow('Coordinates must be between 1 and 50');
     });

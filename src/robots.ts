@@ -1,143 +1,81 @@
 import type { Grid, GridSize, Input, Instruction, Orientation, Position, RobotInstruction } from './types.js';
 
+const turnLeft: Record<Orientation, Orientation> = { N: 'W', W: 'S', S: 'E', E: 'N' };
+const turnRight: Record<Orientation, Orientation> = { N: 'E', E: 'S', S: 'W', W: 'N' };
+const turns: Partial<Record<Instruction, Record<Orientation, Orientation>>> = { L: turnLeft, R: turnRight };
+const moves: Partial<Record<Instruction, (pos: Position) => Partial<Position>>> = {
+  F: (pos) =>
+    ({
+      N: { y: pos.y + 1 },
+      S: { y: pos.y - 1 },
+      E: { x: pos.x + 1 },
+      W: { x: pos.x - 1 },
+    })[pos.orientation],
+};
+
 export const getInputs = (input: string): Input => {
-  // console.log('getInputs:input:', input);
   if (!input) {
     throw new Error('Missing instructions, see README for examples.');
   }
-
-  const lines: string[] = input.split('\n');
+  //split and discard blank lines.
+  const lines = input.split('\n').filter(Boolean);
 
   //First line of instructions is our grid
-  const [width, height] = lines[0].split(' ');
+  const [width, height] = lines[0].split(' ').map(Number);
 
-  if (Number(width) > 50 || Number(height) > 50) {
+  if (width < 1 || width > 50 || height < 1 || height > 50) {
     throw new Error('Coordinates must be between 1 and 50');
   }
-  const gridSize = { width: Number(width), height: Number(height) };
 
-  //Now deal with instructions
-  const [, ...robotInputs] = lines;
+  const gridSize: GridSize = { width, height };
   const robotInstructions: RobotInstruction[] = [];
 
   //Each input should have two lines per robot
-  for (let i = 0; i < robotInputs.length; i += 2) {
-    const [x, y, orientation] = robotInputs[i].split(' ');
-    const instructions = robotInputs[i + 1]?.split('') as Instruction[];
-    const initialPosition: Position = { x: Number(x), y: Number(y), orientation: orientation as Orientation };
-    const robotInstruction: RobotInstruction = { initialPosition, instructions };
-    //Only add complete instructions
+  for (let i = 1; i < lines.length; i += 2) {
+    const instructions = lines[i + 1]?.split('') as Instruction[];
     if (instructions) {
-      robotInstructions.push(robotInstruction);
+      const [x, y, orientation] = lines[i].split(' ');
+      robotInstructions.push({
+        initialPosition: { x: Number(x), y: Number(y), orientation: orientation as Orientation },
+        instructions,
+      });
     }
   }
-  return { gridSize, robotInstructions: robotInstructions };
+  return { gridSize, robotInstructions };
 };
 
 export const getGrid = (grid: GridSize): Grid => {
+  const { width, height } = grid;
   const scents = new Set<string>();
-  const getScentKey = (p: Position) => `${p.x}-${p.y}-${p.orientation}`;
+  const getScentKey = ({ x, y, orientation }: Position) => `${x}-${y}-${orientation}`;
   return {
-    width: grid.width,
-    height: grid.height,
-    isLost: (pos: Position) => pos.x < 0 || pos.y < 0 || pos.x > grid.width || pos.y > grid.height,
+    width,
+    height,
+    isLost: ({ x, y }: Position) => x < 0 || y < 0 || x > width || y > height,
     addScent: (p) => scents.add(getScentKey(p)),
     hasScent: (p) => scents.has(getScentKey(p)),
   };
 };
 
 export const run = (input: string) => {
-  // console.log('run:entry');
   const processedInput = getInputs(input);
-  // console.log('run:processedInput:', processedInput);
-
   const output: string[] = [];
 
   const grid = getGrid(processedInput.gridSize);
-  processedInput.robotInstructions.forEach((r, i) => {
-    // console.log('run:robot:number', i);
-
+  processedInput.robotInstructions.forEach((r) => {
     let currPosition = r.initialPosition;
     for (let i = 0; i < r.instructions.length; i++) {
-      // console.log(currPosition);
-      // console.log(r.instructions[i]);
       const instruction = r.instructions[i];
 
-      if (instruction === 'L' && currPosition.orientation === 'N') {
-        currPosition = { ...currPosition, orientation: 'W' };
+      const turn = turns[instruction];
+      if (turn) {
+        currPosition = { ...currPosition, orientation: turn[currPosition.orientation] };
         continue;
       }
-      if (instruction === 'L' && currPosition.orientation === 'E') {
-        currPosition = { ...currPosition, orientation: 'N' };
-        continue;
-      }
-      if (instruction === 'L' && currPosition.orientation === 'S') {
-        currPosition = { ...currPosition, orientation: 'E' };
-        continue;
-      }
-      if (instruction === 'L' && currPosition.orientation === 'W') {
-        currPosition = { ...currPosition, orientation: 'S' };
-        continue;
-      }
-      if (instruction === 'R' && currPosition.orientation === 'N') {
-        currPosition = { ...currPosition, orientation: 'E' };
-        continue;
-      }
-      if (instruction === 'R' && currPosition.orientation === 'E') {
-        currPosition = { ...currPosition, orientation: 'S' };
-        continue;
-      }
-      if (instruction === 'R' && currPosition.orientation === 'S') {
-        currPosition = { ...currPosition, orientation: 'W' };
-        continue;
-      }
-      if (instruction === 'R' && currPosition.orientation === 'W') {
-        currPosition = { ...currPosition, orientation: 'N' };
-        continue;
-      }
-      if (instruction === 'F' && currPosition.orientation === 'S') {
+      const move = moves[instruction];
+      if (move) {
         if (!grid.hasScent(currPosition)) {
-          const nextPosition = { ...currPosition, y: currPosition.y - 1 };
-          const isLost = grid.isLost(nextPosition);
-          if (isLost) {
-            grid.addScent(currPosition);
-            currPosition = { ...currPosition, isLost };
-            break;
-          }
-          currPosition = nextPosition;
-        }
-        continue;
-      }
-
-      if (instruction === 'F' && currPosition.orientation === 'N') {
-        if (!grid.hasScent(currPosition)) {
-          const nextPosition = { ...currPosition, y: currPosition.y + 1 };
-          const isLost = grid.isLost(nextPosition);
-          if (isLost) {
-            grid.addScent(currPosition);
-            currPosition = { ...currPosition, isLost };
-            break;
-          }
-          currPosition = nextPosition;
-        }
-        continue;
-      }
-      if (instruction === 'F' && currPosition.orientation === 'E') {
-        if (!grid.hasScent(currPosition)) {
-          const nextPosition = { ...currPosition, x: currPosition.x + 1 };
-          const isLost = grid.isLost(nextPosition);
-          if (isLost) {
-            grid.addScent(currPosition);
-            currPosition = { ...currPosition, isLost };
-            break;
-          }
-          currPosition = nextPosition;
-        }
-        continue;
-      }
-      if (instruction === 'F' && currPosition.orientation === 'W') {
-        if (!grid.hasScent(currPosition)) {
-          const nextPosition = { ...currPosition, x: currPosition.x - 1 };
+          const nextPosition = { ...currPosition, ...move(currPosition) };
           const isLost = grid.isLost(nextPosition);
           if (isLost) {
             grid.addScent(currPosition);
@@ -150,6 +88,5 @@ export const run = (input: string) => {
     }
     output.push(`${currPosition.x} ${currPosition.y} ${currPosition.orientation}${currPosition.isLost ? ' LOST' : ''}`);
   });
-  // console.log('run:exit');
   return output.join('\n');
 };

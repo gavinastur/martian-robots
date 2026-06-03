@@ -34,8 +34,10 @@ The input is a string with the following structure:
 5 3
 1 1 E
 RFRFRFRF
+
 3 2 N
 FRRFLLFFRRFLL
+
 0 3 W
 LLFFFLFLFL
 ```
@@ -71,7 +73,7 @@ npm install
 Pass the input as a single CLI argument, using `$'...'` for newlines handling. 
 
 ```bash
-npx tsx src/index.ts $'5 3\n1 1 E\nRFRFRFRF\n3 2 N\nFRRFLLFFRRFLL\n0 3 W\nLLFFFLFLFL'
+npx tsx src/index.ts $'5 3\n1 1 E\nRFRFRFRF\n\n3 2 N\nFRRFLLFFRRFLL\n\n0 3 W\nLLFFFLFLFL'
 ```
 
 ### Tests

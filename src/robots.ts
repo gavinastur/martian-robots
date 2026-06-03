@@ -17,8 +17,9 @@ export const getInputs = (input: string): Input => {
   if (!input) {
     throw new Error('Missing instructions, see README for examples.');
   }
+  //split and discard blank lines.
+  const lines = input.split('\n').filter(Boolean);
 
-  const lines = input.split('\n');
   //First line of instructions is our grid
   const [width, height] = lines[0].split(' ').map(Number);
 
